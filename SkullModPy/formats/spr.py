@@ -16,7 +16,7 @@ class SPREntry:
 
     @classmethod
     def from_file(cls, file):
-        cls(file.read_int(1), file.read_int(1), file.read_int(1), file.read_int(1))
+        return cls(file.read_int(1), file.read_int(1), file.read_int(1), file.read_int(1))
 
     def write(self, file):
         file.write(struct.pack('4B', self.tile_x, self.tile_y, self.tile_u, self.tile_v))
@@ -32,7 +32,7 @@ class SPRFrame:
 
     @classmethod
     def from_file(cls, spr):
-        cls(spr.read_int(4), spr.read_int(4), spr.read_int(4),
+        return cls(spr.read_int(4), spr.read_int(4), spr.read_int(4),
             struct.unpack('>f', spr.file.read(4))[0],struct.unpack('>f', spr.file.read(4))[0])
 
     def write(self, file):
@@ -49,7 +49,7 @@ class SPRAnimation:
 
     @classmethod
     def from_file(cls, spr):
-        cls(spr.read_pascal_string(), spr.read_int(4), spr.read_int(4), spr.read_int(4), spr.read_int(4))
+        return cls(spr.read_pascal_string(), spr.read_int(4), spr.read_int(4), spr.read_int(4), spr.read_int(4))
 
     def write(self, file):
         file.write(struct.pack('Qs', len(self.animation_name), self.animation_name))
@@ -93,6 +93,7 @@ class SPR(Reader):
             frames.append(SPRFrame.from_file(self))
         for _ in range(n_of_animations):
             animations.append(SPRAnimation.from_file(self))
+
 
         # Check if requirements are met to write data out
         # Requirements are: No files that are named like the folders we want to write
